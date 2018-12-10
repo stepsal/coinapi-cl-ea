@@ -1,0 +1,8 @@
+{
+  "config":
+       { "API_KEY": "",
+         "AWS_URL": "",
+         "GCS_URL": "",
+         "DOCKER_URL": ""
+       }
+}

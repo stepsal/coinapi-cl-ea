@@ -1,0 +1,40 @@
+#!/bin/bash
+
+echo "Creating serverless adapter zip for $1"
+mkdir ./adapter_tmp
+cd ./adapter_tmp/
+filename="coinapi_cl_ea_$1.zip"
+
+if [ $1 = 'aws' ]
+then
+  echo "Checking if pip3 is installed"
+  res=$(command -v pip3)
+  exit_code=$?
+
+  if [ $exit_code -eq 1 ]
+  then
+      echo "pip3 is not installed. aborting"
+      rm -r ../adapter_tmp
+      exit 1
+  elif [ $exit_code -eq 0 ]
+  then
+      echo "pip3 is installed"
+      echo $res
+  fi
+
+  cp ../coinapi_cl_ea.py ./coinapi_cl_ea.py
+
+  while read requirement; do
+    pip3 install $requirement --target .
+  done < ../requirements.txt
+
+elif [ $1 = 'gcs' ]
+then
+  cp ../coinapi_cl_ea.py ./main.py
+  cp ../requirements.txt ./requirements.txt
+fi
+
+zip -r  ../$filename *
+echo "Created $filename"
+
+rm -r ../adapter_tmp
